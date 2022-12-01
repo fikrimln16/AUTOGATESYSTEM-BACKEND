@@ -12,7 +12,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-origins = ["https://autogatesystem.vercel.app"]
+origins = ["https://autogatesystem.vercel.app", "https://autogatesystem.vercel.app/login", "https://autogatesystem.vercel.app/signup", "https://autogatesystem.vercel.app/admin/tables"]
 
 app.add_middleware(
     CORSMiddleware,
