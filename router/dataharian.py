@@ -36,6 +36,6 @@ async def get_dataharian(bulan :int, tahun :int,db:Session=Depends(get_db)):
     if bulan == 12:
         bulan = 12
         bulan_next = bulan_next + 1
-        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at BETWEEN '%d-%d-01' AND '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun+1, bulan_next)).fetchall()
+        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at >= '%d-%d-01' AND input_at < '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun+1, bulan_next)).fetchall()
     else :
-        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at BETWEEN '%d-%d-01' AND '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun, bulan+1)).fetchall()
+        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at >= '%d-%d-01' AND input_at < '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun, bulan+1)).fetchall()
