@@ -32,4 +32,10 @@ async def get_dataharian(tanggal, db:Session=Depends(get_db)):
 
 @router.get("/dataharian/{bulan}/{tahun}/jumlah", tags=["dataharian"])
 async def get_dataharian(bulan :int, tahun :int,db:Session=Depends(get_db)):
-    return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at BETWEEN '%d-%d-01' AND '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun, bulan+1)).fetchall()
+    bulan_next = 0
+    if bulan == 12:
+        bulan = 12
+        bulan_next = bulan_next + 1
+        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at BETWEEN '%d-%d-01' AND '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun+1, bulan_next)).fetchall()
+    else :
+        return db.execute("SELECT COUNT(dataharian.dataharian_id) as 'Jumlah' FROM users INNER JOIN dataharian ON users.id = dataharian.user_id WHERE input_at BETWEEN '%d-%d-01' AND '%d-%d-01' ORDER BY dataharian.input_at ASC" %(tahun, bulan, tahun, bulan+1)).fetchall()
