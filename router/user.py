@@ -78,9 +78,11 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                             db.commit()
                             return "user"
                         else:
-                            message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6281322195912')
-                            print(message.sid)
-                            return "ANDA TIDAK DAPAT MASUK"
+                            get_nama = db.execute("SELECT CONCAT(namadepan, namabelakang) as 'namauser' FROM users WHERE id = %d"%i)
+                            for k in get_nama:
+                                message = client.messages.create(from_="whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d, dan nama user : '%s'"%(i, k), to='whatsapp:+6281322195912')
+                                print(message.sid)
+                                return "ANDA TIDAK DAPAT MASUK"
         elif hasilrole == 'security':
             return {"role": "security"}
         elif hasilrole == 'datascientist':
