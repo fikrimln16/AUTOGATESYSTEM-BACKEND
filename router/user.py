@@ -7,6 +7,12 @@ from schemas.User import UserSchema
 from schemas.Login import UserLogin
 import datetime
 
+from twilio.rest import Client 
+ 
+account_sid = 'ACb32edfbfdb796892a3d2edfec162a92a' 
+auth_token = '4ccd134d983233d895b31f90caa570f0' 
+client = Client(account_sid, auth_token) 
+
 
 router = APIRouter()
 
@@ -72,6 +78,8 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                             db.commit()
                             return "user"
                         else:
+                            message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker!', to='whatsapp:+6281322195912')
+                            print(message.sid)
                             return "ANDA TIDAK DAPAT MASUK"
         elif hasilrole == 'security':
             return {"role": "security"}
