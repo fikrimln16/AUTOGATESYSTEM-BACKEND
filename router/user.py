@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from schemas.User import UserSchema
 from schemas.Login import UserLogin
-import datetime
+from datetime import datetime
 from pytz import timezone
 
 from twilio.rest import Client 
@@ -60,7 +60,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
     role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchone()
     for hasilrole in role:
         if hasilrole == 'user':
-            x = datetime.datetime.now(timezone('Asia/Jakarta'))
+            x = datetime.now(timezone('Asia/Jakarta'))
             hasil = db.execute("SELECT id FROM users WHERE email = '%s' and password = '%s' " %(login.email, login.password)).fetchone()
             for i in hasil:
                 input = AlatVerified(
