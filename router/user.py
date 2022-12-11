@@ -6,6 +6,7 @@ from typing import List
 from schemas.User import UserSchema
 from schemas.Login import UserLogin
 import datetime
+from pytz import timezone
 
 from twilio.rest import Client 
  
@@ -59,12 +60,12 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
     role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchone()
     for hasilrole in role:
         if hasilrole == 'user':
-            datenow = datetime.datetime.now()
+            x = datetime.datetime.now(timezone('Asia/Jakarta'))
             hasil = db.execute("SELECT id FROM users WHERE email = '%s' and password = '%s' " %(login.email, login.password)).fetchone()
             for i in hasil:
                 input = AlatVerified(
                     user_id = i,
-                    login_at = datenow,
+                    login_at = x,
                     masker = login.masker,
                 )
                 db.add(input)
@@ -74,7 +75,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                     getmasker = db.execute("SELECT masker FROM alatverified WHERE scan_id = %d" %j).fetchone()
                     for masker in getmasker:
                         if masker == 1:
-                            db.execute("INSERT INTO dataharian VALUES (null, %d, %d, '%s')" %(j, i, datenow))
+                            db.execute("INSERT INTO dataharian VALUES (null, %d, %d, '%s')" %(j, i, x))
                             db.commit()
                             return "user"
                         else:
