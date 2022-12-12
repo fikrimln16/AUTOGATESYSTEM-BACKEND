@@ -1,10 +1,12 @@
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException, status
 from database import SessionLocal
 from models import Users, AlatVerified
 from sqlalchemy.orm import Session
 from typing import List
 from schemas.User import UserSchema
 from schemas.Login import UserLogin
+from schemas.Email import UserEmail
+
 from datetime import datetime
 from pytz import timezone
 
@@ -38,7 +40,7 @@ async def get_users_by_id(id:int, db:Session=Depends(get_db)):
     return db.execute("SELECT * FROM users WHERE id = %s" %id).fetchall()
 
 
-@router.post("/users", response_model=UserSchema, tags=["users"])
+@router.post("/users", response_model=UserSchema, tags=["users"], status_code=status.HTTP_201_CREATED)
 def input_users(user: UserSchema, db:Session=Depends(get_db)):
     u = Users(
         namadepan = user.namadepan,
@@ -51,9 +53,39 @@ def input_users(user: UserSchema, db:Session=Depends(get_db)):
         password = user.password,
         role = "user"
     )
-    db.add(u)
-    db.commit()
-    return u
+    try:
+
+        db.add(u)
+        db.commit()
+        return u
+    except:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+    
+
+@router.post("/users/check", response_model=UserEmail, tags=["users"], status_code=201)
+async def valid_email(email: UserEmail, db:Session=Depends(get_db)):
+    hasil = db.execute("SELECT email FROM users WHERE email = '%s'"%email.email).fetchone()
+    try:
+        email = email.email
+        for i in hasil:
+            if i == email:
+                return {"email" : "%s"%i}
+    except:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+        detail= f'{email} tidak tersedia')
+
+
+# @router.post("/users", response_model=UserSchema, tags=["users"])
+# def input_users(user: UserSchema, db:Session=Depends(get_db)):
+#     try:
+#         hasil = db.execute("SELECT email FROM users WHERE email = '%s'" %user.email).fetchone()
+#         for i in hasil:
+#             emailterdaftar = i
+
+#             if emailterdaftar == user.email:
+#                 return "Sudah ada"
+#     except:
+#         return {"msg" : "email sudah ada"}
 
 @router.post("/users/login", tags=["users"])
 async def user_login(login: UserLogin,db:Session=Depends(get_db)):
@@ -88,6 +120,6 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
             elif hasilrole == 'datascientist':
                 return {"role": "datascientist"}
     except:
-        return "Akun Tidak Ada" 
+        return {"msg" : "akun tidak ada"}
 
     
