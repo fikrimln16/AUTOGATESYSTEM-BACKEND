@@ -11,7 +11,8 @@ from datetime import datetime
 from pytz import timezone
 
 from twilio.rest import Client 
- 
+
+
 account_sid = 'ACb32edfbfdb796892a3d2edfec162a92a' 
 auth_token = '9f2a22270e35239e12150fcbef752ba8' 
 client = Client(account_sid, auth_token) 
@@ -89,7 +90,7 @@ async def valid_email(email: UserEmail, db:Session=Depends(get_db)):
 
 @router.post("/users/login", tags=["users"])
 async def user_login(login: UserLogin,db:Session=Depends(get_db)):
-    role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchone()
+    role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchall()
     try:
         for hasilrole in role:
             if hasilrole == 'user':
@@ -111,7 +112,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                                 db.execute("INSERT INTO dataharian VALUES (null, %d, %d, '%s')" %(j, i, x))
                                 db.commit()
                                 return "user"
-                            elif masker == 0:
+                            else:
                                 message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6289531049418')
                                 print(message.sid)
                                 return "ANDA TIDAK DAPAT MASUK"
@@ -120,9 +121,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
             elif hasilrole == 'datascientist':
                 return {"role": "datascientist"}
     except:
-        message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6289531049418')
-        print(message.sid)
-        return "ANDA TIDAK DAPAT MASUK"
+        return {"msg" : "akun tidak ada"}
 
 
     
