@@ -93,7 +93,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
     role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchall()
     try:
         for hasilrole in role:
-            if hasilrole == 'user':
+            if hasilrole == 'users':
                 x = datetime.now(timezone('Asia/Jakarta'))
                 hasil = db.execute("SELECT id FROM users WHERE email = '%s' and password = '%s' " %(login.email, login.password)).fetchone()
                 for i in hasil:
@@ -111,7 +111,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                             if masker == 1:
                                 db.execute("INSERT INTO dataharian VALUES (null, %d, %d, '%s')" %(j, i, x))
                                 db.commit()
-                                return "user"
+                                return "users"
                             else:
                                 message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6289531049418')
                                 print(message.sid)
