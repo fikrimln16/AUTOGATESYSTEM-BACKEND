@@ -13,7 +13,7 @@ from pytz import timezone
 from twilio.rest import Client 
  
 account_sid = 'ACb32edfbfdb796892a3d2edfec162a92a' 
-auth_token = 'f1ae2923d060bcb2476afaa69f70941c' 
+auth_token = '9f2a22270e35239e12150fcbef752ba8' 
 client = Client(account_sid, auth_token) 
 
 
