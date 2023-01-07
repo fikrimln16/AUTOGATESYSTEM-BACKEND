@@ -120,6 +120,8 @@ def user_login(login: UserLogin,db:Session=Depends(get_db)):
             return {"role": "security"}
         elif hasilrole[0] == 'datascientist':
             return {"role": "datascientist"}
+        else:
+            return {"msg" : "akun tidak ada"}
     # except:
     #     return {"msg" : "akun tidak ada"}
 
