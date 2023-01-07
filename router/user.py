@@ -93,7 +93,7 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
     role = db.execute("SELECT role FROM users WHERE email = '%s' AND password = '%s'" %(login.email, login.password)).fetchall()
     try:
         for hasilrole in role:
-            if hasilrole == 'users':
+            if hasilrole[0] == 'users':
                 x = datetime.now(timezone('Asia/Jakarta'))
                 hasil = db.execute("SELECT id FROM users WHERE email = '%s' and password = '%s' " %(login.email, login.password)).fetchone()
                 for i in hasil:
@@ -116,9 +116,9 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
                                 message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6289531049418')
                                 print(message.sid)
                                 return "ANDA TIDAK DAPAT MASUK"
-            elif hasilrole == 'security':
+            elif hasilrole[0] == 'security':
                 return {"role": "security"}
-            elif hasilrole == 'datascientist':
+            elif hasilrole[0] == 'datascientist':
                 return {"role": "datascientist"}
     except:
         return {"msg" : "akun tidak ada"}
