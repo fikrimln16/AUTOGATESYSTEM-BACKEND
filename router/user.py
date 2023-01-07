@@ -120,6 +120,9 @@ async def user_login(login: UserLogin,db:Session=Depends(get_db)):
             elif hasilrole == 'datascientist':
                 return {"role": "datascientist"}
     except:
-        return {"msg" : "akun tidak ada"}
+        message = client.messages.create(from_='whatsapp:+14155238886', body='Ada yang tidak pakai masker! dengan user id : %d'%i, to='whatsapp:+6289531049418')
+        print(message.sid)
+        return "ANDA TIDAK DAPAT MASUK"
+
 
     
